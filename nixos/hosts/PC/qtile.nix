@@ -1,27 +1,18 @@
 { config, pkgs, ... }:
-let
-  # Configure Video
-  hasAmd = false;
-  hasNvidia = true;
 
-  # GPU-specific options
-  gpuOptions = if hasNvidia then {
-    driver = "nvidia";
-    enableNvidia = true;
-    extraPackages = [ pkgs.nvidia-settings pkgs.nvidia-vaapi-driver];
-  } else if hasAmd then {
-    driver = "amdgpu";
-    enableAmd = true;
-    extraPackages = [];
-  } else { driver = "modesetting"; };
-in 
 {
+imports =
+    [ # Include the results of the hardware scan.
+      ./hardware-configuration.nix
+      # Importing Nvidia Modules
+      ../../modules/nixos/nvidia.nix
+    ];
 # Configure xserver
   services.xserver = {
     enable = true;
     libinput.enable = true;
     displayManager.lightdm.enable = true;
-    videoDriver = gpuOptions.driver;
+    videoDriver = "nvidia";
     # Enabling Qtile
     windowManager.qtile.enable = true;
         # extraPackages = if hasNvidia then [ pkgs.cudaPackages.nvidia_driver pkgs.nvidia-vaapi-driver] else [];

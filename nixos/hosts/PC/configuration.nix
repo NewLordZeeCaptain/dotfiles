@@ -2,29 +2,15 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs,inputs, ... }:
 
-let
-  # Configure Video
-  hasAmd = false;
-  hasNvidia = true;
 
-  # GPU-specific options
-  gpuOptions = if hasNvidia then {
-    driver = "nvidia";
-    enableNvidia = true;
-    extraPackages = [ pkgs.nvidia-settings pkgs.nvidia-vaapi-driver];
-  } else if hasAmd then {
-    driver = "amdgpu";
-    enableAmd = true;
-    extraPackages = [];
-  } else { driver = "modesetting"; };
-in 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       # Includes Qtile Config
+      inputs.home-manager.nixosModules.default
       ./qtile.nix
     ];
 
@@ -32,7 +18,10 @@ in
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  # Enabling Flakes
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  networking.hostName = "zeelinuxpc"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -72,6 +61,15 @@ in
     description = "zeekirill";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
+  };
+
+  # Home-manager
+  home-manager = {
+    # inputs to home-manager modules
+    extraSpecialArgs = {inherit inputs; };
+    users = {
+      "zeekirill" = import ./home.nix;
+    };
   };
 
   # Setting default shell
@@ -122,6 +120,7 @@ in
     alacritty
     wine-wayland
     dolphin
+    peazip
 
 
     
@@ -134,6 +133,7 @@ programs.nm-applet.enable = true;
 services.blueman.enable = true;
 hardware.bluetooth.enable = true;
 hardware.bluetooth.powerOnBoot = true;
+
 
 # Fonts
 fonts.packages = with pkgs; [
@@ -156,30 +156,10 @@ proggyfonts
     enable = true;
     driSupport = true;
     driSupport32Bit = true;
-    extraPackages = if hasAmd then [pkgs.amdvlk] else if hasNvidia then [pkgs.vulkan-validation-layers pkgs.intel-media-driver pkgs.vaapiIntel pkgs.vaapiVdpau pkgs.libvdpau-va-gl] else [];
-    extraPackages32 = if hasAmd then [pkgs.driversi686Linux.amdvlk] else []; 
+    extraPackages =  [pkgs.vulkan-validation-layers pkgs.intel-media-driver pkgs.vaapiIntel pkgs.vaapiVdpau pkgs.libvdpau-va-gl];
   };
 
-  # Nvidia Configuraton
-  hardware.nvidia =  {
-    modesetting.enable = true;
-
-    # Nvidia Power management
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
-
-    # OpenSource kernel modules 
-    open = false;
-
-    # Enable nvidia settings
-    nvidiaSettings = true;
-
-    # Selecting driver version
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
-
-
-
+  
    
 
    # Pipewire Sound

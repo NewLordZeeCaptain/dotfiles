@@ -1,27 +1,12 @@
 { config, pkgs, ... }:
-let
-  # Configure Video
-  hasAmd = false;
-  hasNvidia = true;
 
-  # GPU-specific options
-  gpuOptions = if hasNvidia then {
-    driver = "nvidia";
-    enableNvidia = true;
-    extraPackages = [ pkgs.nvidia-settings pkgs.nvidia-vaapi-driver];
-  } else if hasAmd then {
-    driver = "amdgpu";
-    enableAmd = true;
-    extraPackages = [];
-  } else { driver = "modesetting"; };
-in 
 {
 # Configure xserver
   services.xserver = {
     enable = true;
     libinput.enable = true;
     displayManager.lightdm.enable = true;
-    videoDriver = gpuOptions.driver;
+    videoDriver = "amdgpu";
   };
 
   
@@ -56,12 +41,8 @@ in
     hyprpaper
     rofi-wayland
     wireplumber
-    webcord
-    telegram-desktop
     grim
     slurp
     wl-clipboard
-    mpd
-    vlc
 ];
 }

@@ -2,35 +2,27 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
-
-let
-  # Configure Video
-  hasAmd = false;
-  hasNvidia = true;
-
-  # GPU-specific options
-  gpuOptions = if hasNvidia then {
-    driver = "nvidia";
-    enableNvidia = true;
-    extraPackages = [ pkgs.nvidia-settings pkgs.nvidia-vaapi-driver];
-  } else if hasAmd then {
-    driver = "amdgpu";
-    enableAmd = true;
-    extraPackages = [];
-  } else { driver = "modesetting"; };
-in 
+{ config, pkgs, inputs, ... }:
 {
+
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      # Includes Qtile Config
+      #./qtile.nix
+      inputs.home-manager.nixosModules.default
+      ./hyprland.nix
     ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  # Enabling Flakes
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  networking.hostName = "zeelinuxlaptop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -71,6 +63,16 @@ in
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
   };
+
+  # Home-manager
+  home-manager = {
+    # inputs to home-manager modules
+    extraSpecialArgs = {inherit inputs; };
+    users = {
+      "zeekirill" = import ./home.nix;
+    };
+  };
+
 
   # Setting default shell
   programs.fish.enable = true;
@@ -113,48 +115,13 @@ in
     p7zip
     ffmpeg
     gparted
-    qbittorrent
     fish
     bottom
     ripgrep
     alacritty
-    wine-wayland
-    dolphin
-    # nvidia-vaapi-driver
-
-    # For Hyprland (Doesn't work on nvidia)
-
-    # hyprland
-    # hyprland-protocols
-    # xdg-desktop-portal-hyprland
-    # kitty
-    ranger
-    # waybar
-    # dunst
-    # libnotify
-    # hyprpaper
-    # rofi-wayland
-    # wireplumber
-    # webcord
-    # telegram-desktop
-    # grim
-    # slurp
-    # wl-clipboard
-    # mpd
-    # vlc
-
-    # For Qtile
-    eww
-    dunst
-    libnotify
-    wireplumber
-    grim
-    slurp
-    xclip
-    mpd
-    vlc
 
 
+    
   ];
 
 # Network Manager Applet
@@ -164,6 +131,7 @@ programs.nm-applet.enable = true;
 services.blueman.enable = true;
 hardware.bluetooth.enable = true;
 hardware.bluetooth.powerOnBoot = true;
+
 
 # Fonts
 fonts.packages = with pkgs; [
@@ -186,59 +154,14 @@ proggyfonts
     enable = true;
     driSupport = true;
     driSupport32Bit = true;
-    extraPackages = if hasAmd then [pkgs.amdvlk] else if hasNvidia then [pkgs.vulkan-validation-layers pkgs.intel-media-driver pkgs.vaapiIntel pkgs.vaapiVdpau pkgs.libvdpau-va-gl] else [];
-    extraPackages32 = if hasAmd then [pkgs.driversi686Linux.amdvlk] else []; 
-  };
-
-  # Nvidia Configuraton
-  hardware.nvidia =  {
-    modesetting.enable = true;
-
-    # Nvidia Power management
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
-
-    # OpenSource kernel modules 
-    open = false;
-
-    # Enable nvidia settings
-    nvidiaSettings = true;
-
-    # Selecting driver version
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    extraPackages =  [pkgs.amdvlk] ;
+    extraPackages32 =  [pkgs.driversi686Linux.amdvlk]; 
   };
 
 
+   
 
-  # Configure xserver
-  services.xserver = {
-    enable = true;
-    libinput.enable = true;
-    displayManager.lightdm.enable = true;
-    videoDriver = gpuOptions.driver;
-    # Enabling Qtile
-    windowManager.qtile.enable = true;
-        # extraPackages = if hasNvidia then [ pkgs.cudaPackages.nvidia_driver pkgs.nvidia-vaapi-driver] else [];
-  };
-
-  
-
-  # Xdg Protal
-  xdg.portal = {
-    enable = true;
-    config.common.default = "pkgs.xdg-desktop-portal-gtk";
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  };
-  
-  # Hyprland 
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-    portalPackage = pkgs.xdg-desktop-portal-hyprland;
-    enableNvidiaPatches = if hasNvidia then true else false;
-  };
-
-  # Pipewire Sound
+   # Pipewire Sound
   sound.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
