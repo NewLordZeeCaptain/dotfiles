@@ -9,8 +9,6 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      # Includes Qtile Config
-      #./qtile.nix
       inputs.home-manager.nixosModules.default
       ./hyprland.nix
     ];

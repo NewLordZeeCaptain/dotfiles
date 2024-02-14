@@ -17,6 +17,10 @@
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
+  #Allow unfree
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+  ];
   home.packages = with pkgs; [
     webcord
     telegram-desktop
@@ -28,6 +32,7 @@
     dolphin
     wine-wayland
     qbittorrent
+    vscode
     
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
