@@ -10,12 +10,22 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       inputs.home-manager.nixosModules.default
-      ./hyprland.nix
+      ./gnome.nix
     ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # Appimage Better
+#  boot.binfmt.registrations.appimage = {
+#  wrapInterpreterInShell = false;
+#  interpreter = "${pkgs.appimage-run}/bin/appimage-run";
+#  recognitionType = "magic";
+#  offset = 0;
+#  mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
+#  magicOrExtension = ''\x7fELF....AI\x02'';
+#};
 
   # Enabling Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -31,7 +41,7 @@
   networking.networkmanager.enable = true;
 
   # Set your time zone.
-  time.timeZone = "Europe/Moscow";
+  time.timeZone = "Europe/Athens";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -73,17 +83,33 @@
 
 
   # Setting default shell
-  programs.fish.enable = false;
+  programs.fish.enable = true;
   programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;
+  users.defaultUserShell = pkgs.fish;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   services.udisks2.enable = true;
 
+  # Disabling All x-11 packages
+  #environment.noXlibs = true;
   # List packages installed in system profile. To search, run:
   # $ nix search wget
+
+
+  # Configurating X-Ray
+  services.xray = {
+    enable = true;
+    settingsFile = "/etc/xray/config.json";
+
+    };
   environment.systemPackages = with pkgs; [
+    libproxy
+    proxychains-ng
+    libepoxy
+    appimage-run
+    v2ray
+    xray # Testing
     fzf
     fd
     udisks2
@@ -104,7 +130,6 @@
     rustup
     powerline
     brave
-    shadowsocks-rust
     firefox
     neofetch
     dconf

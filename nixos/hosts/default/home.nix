@@ -22,19 +22,12 @@
   nixpkgs.config.permittedInsecurePackages = [
   ];
   home.packages = with pkgs; [
-    webcord
     telegram-desktop
     vlc
-    shadowsocks-rust
-    mpd
-    vlc
-    peazip
-    dolphin
     wine-wayland
     qbittorrent
     vscode
     git
-    zoxide
     
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
