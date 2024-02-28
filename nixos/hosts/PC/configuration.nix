@@ -11,7 +11,7 @@
       ./hardware-configuration.nix
       # Includes Qtile Config
       inputs.home-manager.nixosModules.default
-      ./qtile.nix
+      # ./qtile.nix
     ];
 
   # Bootloader.
