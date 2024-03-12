@@ -103,9 +103,37 @@
     settingsFile = "/etc/xray/config.json";
 
     };
-  environment.systemPackages = with pkgs; [
+  programs.proxychains = {
+  enable = true;
+  proxies = {
+  myproxy = {
+    type = "socks5";
+    host = "127.0.0.1";
+    port = "10808";
+    };
+    };
+  package = pkgs.proxychains-ng;
+  };
+ environment.systemPackages = with pkgs; [
+    delve
+    insomnia
+    beekeeper-studio
+    nodePackages.vscode-json-languageserver
+    nodePackages.vscode-css-languageserver-bin
+    nodePackages.vscode-html-languageserver-bin
+    gopls
+    go
+    nil
+    pyright
+    ruff-lsp
+    lldb
+    helix
+    lapce
+    steam-run
+    discord
     libproxy
     proxychains-ng
+    # proxychains
     libepoxy
     appimage-run
     v2ray
@@ -128,12 +156,13 @@
     python3
     nodejs_21
     rustup
+    rust-analyzer
     powerline
     brave
     firefox
     neofetch
     dconf
-    blueman
+    # blueman
     brightnessctl
     htop
     hwinfo
@@ -158,7 +187,7 @@
 programs.nm-applet.enable = true;
 
 # Bluetooth
-services.blueman.enable = true;
+#services.blueman.enable = true;
 hardware.bluetooth.enable = true;
 hardware.bluetooth.powerOnBoot = true;
 
@@ -192,7 +221,6 @@ proggyfonts
    
 
    # Pipewire Sound
-  sound.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;

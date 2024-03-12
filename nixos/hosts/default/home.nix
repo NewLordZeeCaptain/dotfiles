@@ -21,14 +21,20 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.permittedInsecurePackages = [
   ];
-  home.packages = with pkgs; [
+  # Configurationg Proxychains
+   home.packages = with pkgs; [
     telegram-desktop
     vlc
     wine-wayland
+    proxychains-ng
     qbittorrent
     vscode
     git
-    
+    protonup-qt   
+    steam
+    lutris
+    mangohud
+    gamemode
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
