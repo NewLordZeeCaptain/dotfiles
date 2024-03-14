@@ -12,8 +12,9 @@ imports =
     enable = true;
     libinput.enable = true;
     displayManager.sddm.enable = true;
-    videoDriver = "nvidia";
-    desktopManager.plasma5.enable = true;
+
+    desktopManager.plasma6.enable = true;
+    displayManager.sddm.wayland.enable = true;
     };
 
   
@@ -26,7 +27,13 @@ imports =
   };
   
   environment.systemPackages = with pkgs; [
-   
+  # kdePackages.wayland
+  # kdePackages.wayland-protocols
+  # kdePackages.xdg-desktop-portal-kde
+  # kdePackages.ark
+  # kdePackages.dolphin
+  # kdePackages.gwenview
+  # kdePackages.spectacle
   ];
 
 }

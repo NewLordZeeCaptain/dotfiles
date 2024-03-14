@@ -14,9 +14,18 @@
 
     # Enable nvidia settings
     nvidiaSettings = true;
+    
 
     # Selecting driver version
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
+environment.systemPackages = with pkgs; [
+  cudaPackages.cudnn
+];
+
+# Configure xserver
+  services.xserver = {
+   videoDriver = "nvidia";
+   };
 }

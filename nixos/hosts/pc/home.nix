@@ -6,7 +6,11 @@
   home.username = "zeekirill";
   home.homeDirectory = "/home/zeekirill";
 
-  # This value determines the Home Manager release that your configuration is
+  #Allow unfree
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+  ];
+    # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
   # introduces backwards incompatible changes.
   #
@@ -15,9 +19,28 @@
   # release notes.
   home.stateVersion = "23.11"; # Please read the comment before changing.
 
+  # home.sessionVariables = {
+  #    EDITOR = "hx";
+  # };
+
+   # Configure Alacritty 
+  programs.alacritty = {
+    enable = true;
+  };
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = [
+  home.packages = with pkgs; [
+    onlyoffice-bin
+    godot_4
+    telegram-desktop
+    vlc
+    wine-wayland
+    git
+    protonup-qt   
+    steam
+    lutris
+    mangohud
+    #gamemode
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello

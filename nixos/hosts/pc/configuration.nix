@@ -12,6 +12,8 @@
       # Includes Qtile Config
       inputs.home-manager.nixosModules.default
       # ./qtile.nix
+      ./kde.nix
+
     ];
 
   # Bootloader.
@@ -32,7 +34,7 @@
   networking.networkmanager.enable = true;
 
   # Set your time zone.
-  time.timeZone = "Europe/Moscow";
+  time.timeZone = "Europe/Athens";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -73,18 +75,59 @@
   };
 
   # Setting default shell
-  programs.fish.enable = false;
-  programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;
+  programs.fish.enable = true;
+  programs.zsh.enable = false;
+  users.defaultUserShell = pkgs.fish;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  # Android emulator
+  virtualisation.waydroid.enable = true;
 
+  # Configurating X-Ray
+  services.xray = {
+    enable = true;
+    settingsFile = "/etc/xray/config.json";
+
+    };
+  programs.proxychains = {
+  enable = true;
+  proxies = {
+  myproxy = {
+    type = "socks5";
+    host = "127.0.0.1";
+    port = "10808";
+  };
+    };
+  package = pkgs.proxychains;
+  };
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    waydroid
     fd
-    zsh
+    go
+    gopls
+    insomnia
+    beekeeper-studio
+    nodePackages.vscode-json-languageserver
+    nodePackages.vscode-css-languageserver-bin
+    nodePackages.vscode-html-languageserver-bin
+    proxychains
+    xray
+    ksshaskpass
+    tree-sitter
+    lazygit
+    llvm
+    clang
+    gcc
+    nodejs_21
+     zsh
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    helix
+    nil
+    
+    pyright
+    ruff-lsp
     wget
     neovim
     emacs
@@ -121,9 +164,7 @@
     bottom
     ripgrep
     alacritty
-    wine-wayland
-    dolphin
-    peazip
+
 
 
     

@@ -10,7 +10,8 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       inputs.home-manager.nixosModules.default
-      ./gnome.nix
+      # ./gnome.nix
+      ./kde.nix
     ];
 
   # Bootloader.
@@ -116,6 +117,7 @@
   };
  environment.systemPackages = with pkgs; [
     delve
+
     insomnia
     beekeeper-studio
     nodePackages.vscode-json-languageserver

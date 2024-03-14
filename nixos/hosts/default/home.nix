@@ -26,9 +26,6 @@
     telegram-desktop
     vlc
     wine-wayland
-    proxychains-ng
-    qbittorrent
-    vscode
     git
     protonup-qt   
     steam
@@ -58,6 +55,7 @@
     enable = true;
     userName = "newlordzeecaptain";
     userEmail = "lordzeecaptain@ya.ru";
+
   };
 
   # Configure Alacritty 
@@ -97,7 +95,7 @@
   #  /etc/profiles/per-user/zeekirill/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-     EDITOR = "nvim";
+     EDITOR = "hx";
   };
 
   # Let Home Manager install and manage itself.
