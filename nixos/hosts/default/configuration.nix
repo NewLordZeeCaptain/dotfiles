@@ -2,36 +2,34 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
+{ config, pkgs,inputs, ... }:
+
+
 {
-
-
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      # Includes Qtile Config
       inputs.home-manager.nixosModules.default
-      # ./gnome.nix
+      # ./qtile.nix
       ./kde.nix
+
     ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
+  # boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
-  # Appimage Better
-#  boot.binfmt.registrations.appimage = {
-#  wrapInterpreterInShell = false;
-#  interpreter = "${pkgs.appimage-run}/bin/appimage-run";
-#  recognitionType = "magic";
-#  offset = 0;
-#  mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
-#  magicOrExtension = ''\x7fELF....AI\x02'';
-#};
+  boot.loader.grub = {
+    enable = true;
+    efiSupport = true;
+    useOSProber = true;
+    devices = [ "nodev" ];
+  };
 
   # Enabling Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  networking.hostName = "zeelinuxlaptop"; # Define your hostname.
+  networking.hostName = "zeelinuxpc"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -69,7 +67,7 @@
   users.users.zeekirill = {
     isNormalUser = true;
     description = "zeekirill";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [];
   };
 
@@ -82,21 +80,19 @@
     };
   };
 
-
+  # Docker
+  virtualisation.docker = {
+    enableNvidia = false;
+    enable = true;
+  };
   # Setting default shell
   programs.fish.enable = true;
-  programs.zsh.enable = true;
+  programs.zsh.enable = false;
   users.defaultUserShell = pkgs.fish;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  services.udisks2.enable = true;
-
-  # Disabling All x-11 packages
-  #environment.noXlibs = true;
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-
+  # Android emulator
+  virtualisation.waydroid.enable = true;
 
   # Configurating X-Ray
   services.xray = {
@@ -111,40 +107,40 @@
     type = "socks5";
     host = "127.0.0.1";
     port = "10808";
-    };
-    };
-  package = pkgs.proxychains-ng;
   };
- environment.systemPackages = with pkgs; [
-    delve
-
+    };
+  package = pkgs.proxychains;
+  };
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [
+    docker
+    docker-compose
+    waydroid
+    fd
+    go
+    gopls
     insomnia
     beekeeper-studio
     nodePackages.vscode-json-languageserver
     nodePackages.vscode-css-languageserver-bin
     nodePackages.vscode-html-languageserver-bin
-    gopls
-    go
+    proxychains
+    xray
+    ksshaskpass
+    tree-sitter
+    lazygit
+    llvm
+    clang
+    gcc
+    nodejs_21
+     zsh
+    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    helix
     nil
+    
     pyright
     ruff-lsp
-    lldb
-    helix
-    lapce
-    steam-run
-    discord
-    libproxy
-    proxychains-ng
-    # proxychains
-    libepoxy
-    appimage-run
-    v2ray
-    xray # Testing
-    fzf
-    fd
-    udisks2
-    ncurses
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     neovim
     emacs
@@ -158,9 +154,9 @@
     python3
     nodejs_21
     rustup
-    rust-analyzer
     powerline
     brave
+    shadowsocks-rust
     firefox
     neofetch
     dconf
@@ -176,17 +172,19 @@
     p7zip
     ffmpeg
     gparted
+    qbittorrent
     fish
     bottom
     ripgrep
     alacritty
 
 
+
     
   ];
 
 # Network Manager Applet
-programs.nm-applet.enable = true;
+#programs.nm-applet.enable = true;
 
 # Bluetooth
 #services.blueman.enable = true;
@@ -215,14 +213,14 @@ proggyfonts
     enable = true;
     driSupport = true;
     driSupport32Bit = true;
-    extraPackages =  [pkgs.amdvlk] ;
-    extraPackages32 =  [pkgs.driversi686Linux.amdvlk]; 
+    extraPackages =  [pkgs.vulkan-validation-layers pkgs.intel-media-driver pkgs.vaapiIntel pkgs.vaapiVdpau pkgs.libvdpau-va-gl];
   };
 
-
+  
    
 
    # Pipewire Sound
+  sound.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;

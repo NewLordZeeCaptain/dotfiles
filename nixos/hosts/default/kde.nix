@@ -10,9 +10,11 @@ imports =
 # Configure xserver
   services.xserver = {
     enable = true;
+    videoDriver = "amdgpu";
+
     libinput.enable = true;
     displayManager.sddm.enable = true;
-    videoDriver = "amdgpu";
+
     desktopManager.plasma6.enable = true;
     displayManager.sddm.wayland.enable = true;
     };
@@ -27,13 +29,13 @@ imports =
   };
   
   environment.systemPackages = with pkgs; [
-  kdePackages.wayland
-  kdePackages.wayland-protocols
-  kdePackages.xdg-desktop-portal-kde
-  kdePackages.ark
-  kdePackages.dolphin
-  kdePackages.gwenview
-  kdePackages.spectacle
+  # kdePackages.wayland
+  # kdePackages.wayland-protocols
+  # kdePackages.xdg-desktop-portal-kde
+  # kdePackages.ark
+  # kdePackages.dolphin
+  # kdePackages.gwenview
+  # kdePackages.spectacle
   ];
 
 }

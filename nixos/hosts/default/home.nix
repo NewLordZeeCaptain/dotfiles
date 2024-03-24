@@ -6,7 +6,11 @@
   home.username = "zeekirill";
   home.homeDirectory = "/home/zeekirill";
 
-  # This value determines the Home Manager release that your configuration is
+  #Allow unfree
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+  ];
+    # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
   # introduces backwards incompatible changes.
   #
@@ -15,14 +19,22 @@
   # release notes.
   home.stateVersion = "23.11"; # Please read the comment before changing.
 
+  # home.sessionVariables = {
+  #    EDITOR = "hx";
+  # };
+
+   # Configure Alacritty 
+  programs.alacritty = {
+    enable = true;
+  };
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  #Allow unfree
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.permittedInsecurePackages = [
-  ];
-  # Configurationg Proxychains
-   home.packages = with pkgs; [
+  home.packages = with pkgs; [
+    tor-browser
+    onlyoffice-bin
+    ccls
+    discord
+    godot_4
     telegram-desktop
     vlc
     wine-wayland
@@ -31,7 +43,8 @@
     steam
     lutris
     mangohud
-    gamemode
+    jupyter-all
+    #gamemode
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
@@ -49,20 +62,6 @@
     #   echo "Hello, ${config.home.username}!"
     # '')
   ];
-
-  # Git Config
-  programs.git = {
-    enable = true;
-    userName = "newlordzeecaptain";
-    userEmail = "lordzeecaptain@ya.ru";
-
-  };
-
-  # Configure Alacritty 
-  programs.alacritty = {
-    enable = true;
-  };
-  
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -95,7 +94,7 @@
   #  /etc/profiles/per-user/zeekirill/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-     EDITOR = "hx";
+     EDITOR = "nvim";
   };
 
   # Let Home Manager install and manage itself.
