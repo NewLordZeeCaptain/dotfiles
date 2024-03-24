@@ -17,8 +17,14 @@
     ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
+  # boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub = {
+    enable = true;
+    efiSupport = true;
+    useOSProber = true;
+    devices = [ "nodev" ];
+  };
 
   # Enabling Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -61,7 +67,7 @@
   users.users.zeekirill = {
     isNormalUser = true;
     description = "zeekirill";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [];
   };
 
@@ -74,6 +80,11 @@
     };
   };
 
+  # Docker
+  virtualisation.docker = {
+    enableNvidia = true;
+    enable = true;
+  };
   # Setting default shell
   programs.fish.enable = true;
   programs.zsh.enable = false;
@@ -103,6 +114,8 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    docker
+    docker-compose
     waydroid
     fd
     go
@@ -147,7 +160,7 @@
     firefox
     neofetch
     dconf
-    blueman
+    # blueman
     brightnessctl
     htop
     hwinfo
@@ -171,10 +184,10 @@
   ];
 
 # Network Manager Applet
-programs.nm-applet.enable = true;
+#programs.nm-applet.enable = true;
 
 # Bluetooth
-services.blueman.enable = true;
+#services.blueman.enable = true;
 hardware.bluetooth.enable = true;
 hardware.bluetooth.powerOnBoot = true;
 

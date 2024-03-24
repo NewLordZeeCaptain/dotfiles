@@ -30,7 +30,10 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    tor-browser
     onlyoffice-bin
+    ccls
+    discord
     godot_4
     telegram-desktop
     vlc
@@ -40,6 +43,7 @@
     steam
     lutris
     mangohud
+    jupyter-all
     #gamemode
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
